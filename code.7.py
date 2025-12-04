@@ -1,0 +1,21 @@
+import cv2
+
+# Load an image
+img = cv2.imread(r"C:\Users\psadi\Downloads\jpg_44-2.jpg")  # Replace with your image path
+
+# Check if image loaded correctly
+if img is None:
+    print("Error: Could not read image.")
+    exit()
+
+# Apply Gaussian Blur
+blur = cv2.GaussianBlur(img, (15, 15), 0)
+
+# Show both images
+cv2.imshow("Original", img)
+cv2.imshow("Blurred", blur)
+
+# Wait for key press
+print("Press any key on the image window to close...")
+cv2.waitKey(0)
+cv2.destroyAllWindows()
