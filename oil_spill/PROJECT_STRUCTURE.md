@@ -147,3 +147,4 @@ The modular structure allows easy:
 ---
 
 **This structure provides a clean, maintainable, and scalable foundation for the Oil Spill Detection System.**
+
