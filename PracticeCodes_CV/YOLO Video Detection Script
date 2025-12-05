@@ -1,0 +1,52 @@
+from ultralytics import YOLO
+import cv2
+
+# Load pretrained YOLOv11n model
+model = YOLO (r"C:\Users\psadi\Downloads\last (1).pt")  # or your own model path, e.g. "best.pt")
+
+# Stream source (RTSP, RTMP, webcam, video file, etc.)
+source =r"C:\Users\psadi\Downloads\vecteezy_rescue-ship-with-crane-lifting-wrecked-cargo-ship-at-port-in_11371326.mp4" # replace with your stream or file path
+
+# OpenCV video capture to read stream properties (for saving output)
+cap = cv2.VideoCapture(source)
+if not cap.isOpened():
+    print("❌ Error: Could not open video stream.")
+    exit()
+
+# Get frame dimensions and FPS for saving video
+frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+fps = int(cap.get(cv2.CAP_PROP_FPS))
+if fps == 0:
+    fps = 25  # fallback if FPS is not detected
+
+# Define video writer (output file name and format)
+output_path = "detected_output.mp4"
+fourcc = cv2.VideoWriter_fourcc(*"mp4v")  # codec
+out = cv2.VideoWriter(output_path, fourcc, fps, (frame_width, frame_height))
+
+print(f"🎥 Saving detected video to: {output_path}")
+
+# Run YOLOv11 inference in streaming mode
+results = model(source, stream=True)
+
+for result in results:
+    # Get the annotated frame (with boxes and labels)
+    frame = result.plot()
+
+    # Write frame to output video
+    out.write(frame)
+
+    # Optionally show the live detection
+    cv2.imshow("YOLOv11 Stream", frame)
+
+    # Press 'q' to stop
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+# Cleanup
+cap.release()
+out.release()
+cv2.destroyAllWindows()
+
+print("✅ Detection complete and video saved successfully.")
